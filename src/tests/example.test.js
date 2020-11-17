@@ -1,0 +1,49 @@
+// import puppeteer from "puppeteer";
+import {
+    step
+} from "mocha-steps";
+
+import Page from "../builder";
+
+describe('Mocha steps demo', () => {
+    // let browser;
+    let page;
+    // let mobile;
+    // let tablet;
+
+    before(async () => {
+        // browser = await puppeteer.launch({
+        //     headless: true
+        // });
+        page = await Page.build("Desktop");
+        // mobile = await Page.build("Mobile");
+    })
+
+    after(async () => {
+        await page.close();
+        // await mobile.close();
+    })
+
+    // step("should load google homepage", async () => {
+    //     await page.goto('https://google.com')
+    // });
+
+    // step("step 2 should be failed", async () => {
+    //     await page.waitForSelector('#fail')
+    // });
+
+    // step("step 3 ", async () => {
+    //     console.log("from step 3")
+    // });
+
+    // step("step 4", async () => {
+    //     console.log("from step 4");
+    // });
+
+    step("should load the homepage", async () => {
+        await page.goto('http://zero.webappsecurity.com/online-banking.html');
+        await page.waitAndClick('#onlineBankingMenu');
+        await page.waitFor(5000);
+    });
+
+});
