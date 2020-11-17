@@ -19,7 +19,7 @@ var Builder = function () {
         key: "build",
         value: async function build(viewport) {
             var launchOptions = {
-                headless: false,
+                headless: true,
                 slowMo: 0,
                 args: ["--no-sandbox", "disable-setui-sandbox", "disable-web-security"]
             };
@@ -70,9 +70,62 @@ var Builder = function () {
         }
     }, {
         key: "waitAndType",
-        value: async function waitAndType(selector) {
+        value: async function waitAndType(selector, text) {
             await this.page.waitForSelector(selector);
             await this.page.type(selector, text);
+        }
+    }, {
+        key: "getText",
+        value: async function getText(selector) {
+            await this.page.waitForSelector(selector);
+            var text = await this.page.$eval(selector, function (e) {
+                return e.innerHTML;
+            });
+            return text;
+        }
+    }, {
+        key: "getCount",
+        value: async function getCount(selector) {
+            await this.page.waitForSelector(selector);
+            var count = await this.page.$$eval(selector, function (items) {
+                return items.length;
+            });
+            return count;
+        }
+    }, {
+        key: "waitForXPathAndClick",
+        value: async function waitForXPathAndClick(xpath) {
+            await this.page.waitForXPath(xpath);
+            var elements = await this.page.$x(xpath);
+            if (elements.length > 1) {
+                console.warn("waitForXPathAndClick returned more than one result");
+            }
+            await elements[0].click();
+        }
+    }, {
+        key: "isElementVisible",
+        value: async function isElementVisible(selector) {
+            var visible = true;
+            await this.page.waitForSelector(selector, {
+                visible: true,
+                timeout: 15000
+            }).catch(function () {
+                visible = false;
+            });
+            return visible;
+        }
+    }, {
+        key: "isXPathVisible",
+        value: async function isXPathVisible(selector) {
+            var visible = true;
+            await this.page.waitXPath(selector, {
+                visible: true,
+                timeout: 3000
+            }).catch(function () {
+                visible = false;
+            });
+
+            return visible;
         }
     }]);
 

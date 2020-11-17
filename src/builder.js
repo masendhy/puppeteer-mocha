@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 export default class Builder {
     static async build(viewport) {
         const launchOptions = {
-            headless: false,
+            headless: true,
             slowMo: 0,
             args: [
                 "--no-sandbox",
@@ -52,7 +52,7 @@ export default class Builder {
         await this.page.click(selector);
     }
 
-    async waitAndType(selector) {
+    async waitAndType(selector, text) {
         await this.page.waitForSelector(selector);
         await this.page.type(selector, text);
     }
@@ -82,7 +82,7 @@ export default class Builder {
         let visible = true;
         await this.page.waitForSelector(selector, {
             visible: true,
-            timeout: 3000
+            timeout: 15000
         }).catch(() => {
             visible = false;
         });
